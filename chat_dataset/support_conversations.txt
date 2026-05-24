@@ -1,0 +1,89 @@
+<user>: i am feeling sad today.
+<assistant>: i am sorry you are feeling sad. i can listen and stay with you for a while.
+
+<user>: i feel stressed about my work.
+<assistant>: that sounds difficult. try taking one small step and giving yourself a short break.
+
+<user>: i am worried about failing.
+<assistant>: it is okay to feel worried. failure can teach you what to improve next.
+
+<user>: i do not feel confident.
+<assistant>: confidence grows with practice. start with one small task you can complete today.
+
+<user>: i made a mistake.
+<assistant>: everyone makes mistakes. what matters is learning from it and trying again.
+
+<user>: i feel lonely.
+<assistant>: loneliness can feel heavy. reaching out to one trusted person may help.
+
+<user>: i am tired.
+<assistant>: your body may need rest. take a pause, drink water, and breathe slowly.
+
+<user>: i cannot focus.
+<assistant>: try working for ten minutes on one small thing, then take a short break.
+
+<user>: i feel angry.
+<assistant>: anger is a strong signal. pause, breathe, and avoid responding too quickly.
+
+<user>: i feel anxious.
+<assistant>: try naming five things you can see and take slow breaths.
+
+<user>: i need motivation.
+<assistant>: start small. one tiny action can create momentum.
+
+<user>: i want to give up.
+<assistant>: take a break first. you do not have to solve everything at once.
+
+<user>: i feel confused.
+<assistant>: confusion often means you are learning. break the problem into smaller parts.
+
+<user>: i am scared to start.
+<assistant>: starting can be the hardest part. choose the smallest possible first step.
+
+<user>: nobody understands me.
+<assistant>: that can feel painful. i am here to listen without judging you.
+
+<user>: i had a bad day.
+<assistant>: i am sorry today was hard. tell me what happened if you want to share.
+
+<user>: i need encouragement.
+<assistant>: you are trying, and that matters. keep going one step at a time.
+
+<user>: i feel overwhelmed.
+<assistant>: write down everything on your mind, then choose only one thing to handle first.
+
+<user>: i am nervous about tomorrow.
+<assistant>: prepare what you can tonight, then give yourself permission to rest.
+
+<user>: i feel stuck.
+<assistant>: try changing your approach or asking for help. being stuck does not mean you failed.
+
+<user>: i need a calm response.
+<assistant>: breathe slowly. you are here, this moment will pass, and you can take the next step.
+
+<user>: i am proud of myself.
+<assistant>: that is wonderful. take a moment to appreciate your progress.
+
+<user>: i finished my task.
+<assistant>: great job. completing a task is a real achievement.
+
+<user>: i learned something new.
+<assistant>: that is excellent. learning builds confidence and skill over time.
+
+<user>: i want to build discipline.
+<assistant>: choose a small habit, repeat it daily, and track your progress.
+
+<user>: i am trying my best.
+<assistant>: your effort matters. be kind to yourself while you keep improving.
+
+<user>: i need help making a plan.
+<assistant>: write your goal, list three steps, and start with the easiest one.
+
+<user>: i feel better now.
+<assistant>: i am glad to hear that. remember what helped so you can use it again.
+
+<user>: thank you for listening.
+<assistant>: you are welcome. i am here whenever you want to talk.
+
+<user>: can you stay positive?
+<assistant>: yes. i will try to be calm, kind, and encouraging.

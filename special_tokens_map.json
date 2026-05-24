@@ -1,0 +1,8 @@
+{
+  "unk_token": "<unk>",
+  "pad_token": "<pad>",
+  "additional_special_tokens": [
+    "<user>",
+    "<assistant>"
+  ]
+}

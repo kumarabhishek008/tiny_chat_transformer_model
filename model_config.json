@@ -1,0 +1,11 @@
+{
+  "model_type": "tiny_gpt_from_scratch",
+  "vocab_size": 2000,
+  "block_size": 128,
+  "n_embd": 128,
+  "n_head": 4,
+  "n_layer": 4,
+  "dropout": 0.1,
+  "tokenizer_file": "tokenizer.json",
+  "checkpoint_file": "checkpoints/tiny_chatbot_combined.pt"
+}
