@@ -1,71 +1,64 @@
-# GPT From Scratch Chatbot
+# GPT From Scratch Chatbot (MLX)
 
-This folder contains a small educational chatbot trained from scratch in PyTorch.
+A small decoder-only Transformer (causal multi-head self-attention, about 11M parameters) trained from scratch on
+Apple Silicon with MLX. English only.
 
-It is not production quality. It is meant to teach the complete pipeline:
+## How to run
 
-1. Train or load a local BPE tokenizer.
-2. Convert chat text into token IDs.
-3. Train a decoder-only Transformer.
-4. Save and load a checkpoint.
-5. Generate assistant-style replies.
+Open `gpt_from_scratch_chatbot.ipynb` in VS Code, select the kernel **GPT MLX Python 3.13**, restart the kernel, and
+Run All. Top to bottom:
+
+1. **First training** (section 7): `make_tokens(TRAIN_FILES)` + `train_model(...)` on one big starting file,
+   FineWeb-Edu (clean educational English, ~170 shards / ~12 h). Once trained, this step takes seconds.
+2. **Chat** with the model, then **check accuracy** on fixed test data: perplexity and top-1/top-5 next-token
+   accuracy on held-out wiki, chat and TinyStories text, plus a chat quiz with grammar checks.
+3. **Retrain** (section 10): with `ONE_FILE_PER_RUN = True`, trains only the **next unfinished file** of
+   `RETRAIN_FILES` and then checks accuracy again. Run All again for the next file.
+
+`RETRAIN_FILES` is in training order: knowledge files (Simple Wikipedia, Wikipedia parts) alternate with chat files
+(lmsys, SmolTalk), and it ends with chat, so the model finishes as a chatbot. Files the checkpoint has already
+trained are skipped automatically. Interrupting saves the exact position; Run All continues from there.
+
+`make_tokens` detects each file's kind: txt/csv chat files, Wikipedia XML, chat parquet (`conversation` or
+`messages` column) and plain-text parquet (`text` column). It cleans the text (English ASCII, repairs broken
+encodings, keeps complete sentences from wiki) and saves ~5M-token shards in `data/shards/`, so each file is
+tokenized only once.
 
 ## Files
 
-- `chat_data.txt`: tiny starter chat dataset.
-- `chat_dataset/conversations.json`: structured conversation dataset used first when present.
-- `chat_dataset/human_text.txt`: user-side conversation lines.
-- `chat_dataset/robot_text.txt`: assistant-side conversation lines.
-- `chat_dataset/labeled_conversations.txt`: paired conversations with `<user>:` and `<assistant>:` labels.
-- `chat_dataset/daily_english_conversations.txt`: extra clean English practice conversations.
-- `chat_dataset/ai_learning_conversations.txt`: extra AI and machine learning conversations.
-- `chat_dataset/support_conversations.txt`: extra supportive conversation examples.
-- `train_chatbot.py`: tokenizer, GPT model, training loop, saving, and chat generation.
-- `chat.py`: load checkpoint and chat interactively.
-- `tokenizer.json`: local BPE tokenizer created from the training text.
-- `tokenizer_config.json`: metadata for future tokenizer reuse.
-- `special_tokens_map.json`: special-token definitions.
-- `model_config.json`: tiny model architecture metadata.
+- `gpt_from_scratch_chatbot.ipynb`: everything (cleaning, tokens, model, training, chat, accuracy, retrain).
+- `tokenizer.json`: English-only byte-level BPE (12,474 tokens). It lowercases and folds accents.
+- `checkpoints/chatbot_mlx.*`: weights, optimizer state, and a JSON log of trained shards.
+  `chatbot_mlx.previous.*` is the checkpoint from before the last shard.
+- `data/shards/`: tokens per source file (safe to delete; rebuilt when needed).
+- `data/eval_history.jsonl`: every accuracy check, shown as a progress table by `show_eval_history()`.
+- `chat_dataset/`: raw data; `chat_dataset/grammar/` has TinyStories, FineWeb-Edu, Simple Wikipedia and SmolTalk.
 
-`conversations.json` is used during training when present. It stores conversations like:
+## Growing the model (model_002)
 
-```json
-{
-  "id": "daily_english_conversations-0001",
-  "source": "daily_english_conversations.txt",
-  "messages": [
-    {"role": "user", "content": "hello, how are you today?"},
-    {"role": "assistant", "content": "hello! i am doing well and ready to chat with you."}
-  ]
-}
-```
+`CHECKPOINT = "checkpoints/model_002"` is created the first time by section 6b: a bigger copy of
+`model_001_best` (12 layers × 512 wide, 16 heads, 512-token context, ~51M parameters) that starts out making the
+same predictions and keeps its record of trained data. It trains at ~3,900 tokens/s (1B tokens ≈ 3 days).
 
-The text files are kept as editable source/fallback data. Every `*_conversations.txt` file can be regenerated into JSON. `labeled_conversations.txt` was created by pairing `human_text.txt` and `robot_text.txt` line by line:
+Its `RETRAIN_FILES` entries (data in `chat_dataset/understanding/` and FineWeb-Edu 001/002):
+1. FineWeb-Edu 001 + SQuAD v2 (answer from a text, or reply "i don't have proper information") + Dolly-15k
+2. FineWeb-Edu 002 + wiki 6 + wiki 7 (optional, more knowledge)
+3. Final polish: OpenAssistant (English only) + everyday conversations + your txt files
 
-```text
-<user>: line from human_text.txt
-<assistant>: matching line from robot_text.txt
-```
+The accuracy check adds a **reading test** (SQuAD v2 validation: answers found / "no information" when the answer
+is missing) and questions about made-up things, where "I don't know" is the right answer.
 
-## Run
+## Training again later
 
-From the project root:
+| You want to... | Do this |
+|---|---|
+| Continue after stopping | restart the kernel, Run All |
+| Train the next file | Run All again (it picks the next unfinished file of `RETRAIN_FILES`) |
+| Train the whole list in one go | `ONE_FILE_PER_RUN = False` (`MIX_FILES = True` interleaves the files) |
+| Add new data | add files to `RETRAIN_FILES` at the position you want them trained |
+| Train over everything again | `TRAINING_ROUND = 2` (then 3, 4 ...) |
+| Undo the last shard | copy `checkpoints/chatbot_mlx.previous.*` over `checkpoints/chatbot_mlx.*` |
+| Start a fresh model | `CHECKPOINT = "checkpoints/chatbot_fresh"` (any new name; optionally edit `NEW_MODEL`), then Run All. The old model stays untouched and the tokens are reused. |
 
-```bash
-python3 GenAI/gpt_from_scratch_chatbot/train_chatbot.py
-```
-
-The script saves:
-
-```text
-GenAI/gpt_from_scratch_chatbot/checkpoints/tiny_chatbot_combined.pt
-```
-
-## Important
-
-This model is intentionally tiny. It will not chat like ChatGPT. To improve it:
-
-- Add much more chat data to `chat_data.txt`.
-- Increase `TOKENIZER_VOCAB_SIZE` and retrain the tokenizer when you have more data.
-- Increase `N_LAYER`, `N_HEAD`, and `N_EMBD`.
-- Train longer by increasing `MAX_ITERS`.
+Only one process can train at a time: a second one stops with an "another training process" error. Stop a
+background run with `kill <pid>` (it saves first).

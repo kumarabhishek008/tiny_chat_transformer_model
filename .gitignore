@@ -1,3 +1,9 @@
 chat_dataset/
-chat_datset/
-chat_data.txt
+data/
+old_unused/
+checkpoints/*.previous.*
+__pycache__/
+.ipynb_checkpoints/
+.DS_Store
+checkpoints/*.lock
+checkpoints/
